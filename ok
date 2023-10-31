@@ -1,0 +1,107 @@
+'''
+import requests
+from tkinter import *
+def pegar_informações():
+    requisicao = requests.get("https://economia.awesomeapi.com.br/last/USD-BRL,EUR-BRL,BTC-BRL")
+
+    requisicao_dic = requisicao.json()
+
+    cotacao_dolar = requisicao_dic['USDBRL']['bid']
+    cotacao_euro = requisicao_dic['EURBRL']['bid']
+    cotacao_btc = requisicao_dic['BTCBRL']['bid']
+
+    texto_resposta_das_informações['text'] = f  #aqui tem tres'
+    Dólar: {cotacao_dolar}
+    Euro: {cotacao_euro}
+    BTC: {cotacao_btc}#aqui tem tres'
+    
+
+
+janela = Tk()
+janela.title("banco de dados ") #nome da janela
+janela.geometry("400x400")#tamanho da janela
+
+texto_orientação  = Label (janela, text= "clique no botão para da início")#nome que esta no inicio
+texto_orientação.grid(column=0, row=0,padx=10,pady=10) 
+
+botão= Button (janela, text= "busca informações", command= pegar_informações)#nome e criação do botão
+botão.grid(column=0,row=1,padx=10,pady=10)
+
+texto_resposta_das_informações= Label(janela,text="")#resposta quando apeta no botão
+texto_resposta_das_informações.grid(column=0, row=2,padx=10,pady=10)
+janela.mainloop() #sempre a ultima linha de codigo da janela
+'''
+from tkinter import *
+janela1 = Tk()
+
+class aplicativo():
+    def __init__(self):
+        self.janela1 = janela1
+        self.tela()
+        self.frames_da_tela()
+        self.criando_botões()
+        janela1.mainloop()#fechar
+    def tela(self):
+        self.janela1.title("banco de dados")
+        self.janela1.configure ( background='#00008b')#cor da janela que eu quero
+        self.janela1.geometry("400x400")
+        self.janela1.resizable(True,True)#caso queira abir mais a janela para as laterais e cima... como coloquei false na segunda ele não deixa eu abaixar a tela
+        self.janela1.maxsize(width=900,height=900)# limite maximo que a tela pode chegar
+        self.janela1.minsize(width=100,height=100)# limite maximo que a tela pode diminuir
+    def frames_da_tela(self):
+        self.frame_1 = Frame (self.janela1,bd=4, bg='#a9a9a9',highlightbackground='#5F9F9F',highlightthickness=5)
+        self.frame_1.place(relx=0.02,rely=0.02, relwidth=0.96, relheight=0.46)# posição x= orizontal. y= vertical  
+        self.frame_2 = Frame (self.janela1,bd=4, bg='#a9a9a9',highlightbackground='#5F9F9F',highlightthickness=5)
+        self.frame_2.place(relx=0.02,rely=0.500, relwidth=0.96, relheight=0.46)
+
+    def criando_botões(self):
+        self.botão_limpar = Button(self.frame_1, text="Limpar", bd=3,bg='#5F9F9F', fg= '#FFFFFF', font=('verdana',8,'bold'))
+        self.botão_limpar.place(relx=0.5, rely=0.1,relwidth=0.2,relheight=0.15)
+
+        self.botão_buscar = Button(self.frame_1, text="Buscar",bd=3,bg='#90ee90', fg= '#FFFFFF',font=('verdana',8,'bold'))
+        self.botão_buscar.place(relx=0.7, rely=0.1,relwidth=0.2,relheight=0.15)
+
+        self.botão_novo = Button(self.frame_1, text="Novo",bd=3,bg='#FFFFFF', fg= '#000000',font=('verdana',8,'bold'))
+        self.botão_novo.place(relx=0.4, rely=0.3,relwidth=0.2,relheight=0.15)# talvez coloque na janela2
+
+        self.botão_alterar = Button(self.frame_1, text="Alterar",bd=3,bg= 'yellow', fg= '#000000',font=('verdana',8,'bold'))
+        self.botão_alterar.place(relx=0.6, rely=0.3,relwidth=0.2,relheight=0.15)# talvez coloque na janela2
+
+        
+        self.botão_apagar = Button(self.frame_1, text="Apagar",bd=3, bg='#ff0000', fg= '#FFFFFF',font=('verdana',8,'bold'))
+        self.botão_apagar.place(relx=0.8, rely=0.3,relwidth=0.2,relheight=0.15)# talvez coloque na janela2
+
+        #criação da label e entrada do codigo
+        self.lb_senha = Label(self.frame_1,text = "Senha")
+        self.lb_senha.place(relx=0.1, rely=0.0,relwidth=0.1,relheight=0.10)
+
+        self.senha_entry = Entry(self.frame_1)
+        self.senha_entry.place(relx=0.04, rely=0.12,relwidth=0.3,relheight=0.15)
+
+#caso ele não tenha o cadastro 
+        #criação da label e entrada do codigo #nome
+        self.lb_nome = Label(self.frame_2,text = "Nome")
+        self.lb_nome.place(relx=0.01, rely=0.0,relwidth=0.1,relheight=0.10)
+
+        self.senha_entry = Entry(self.frame_2)
+        self.senha_entry.place(relx=0.01, rely=0.10,relwidth=0.60)
+
+                #criação da label e entrada do codigo# cpf 
+        self.lb_cpf = Label(self.frame_2,text = "CPF")
+        self.lb_cpf.place(relx=0.01, rely=0.25,relwidth=0.1,relheight=0.10)
+
+        self.cpf_entry = Entry(self.frame_2)
+        self.cpf_entry.place(relx=0.01, rely=0.35,relwidth=0.60)
+                #criação da label e entrada do codigo# cidade 
+        self.lb_cidade = Label(self.frame_2,text = "Cidade")
+        self.lb_cidade.place(relx=0.01, rely=0.47,relwidth=0.1,relheight=0.10)
+
+        self.cidade_entry = Entry(self.frame_2)
+        self.cidade_entry.place(relx=0.01, rely=0.55,relwidth=0.60)
+                #criação da label e entrada do codigo# telefone
+        self.lb_telefone = Label(self.frame_2,text = "Telefone")
+        self.lb_telefone.place(relx=0.01, rely=0.70,relwidth=0.1,relheight=0.10)
+
+        self.telefone_entry = Entry(self.frame_2)
+        self.telefone_entry.place(relx=0.01, rely=0.80,relwidth=0.60)
+aplicativo()
