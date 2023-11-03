@@ -17,6 +17,12 @@ class limpa():
         self.cursor = self.conn.cursor(); print("conectando ao banco de dados")
     def desconecta_bd(self):
         self.conn.close(); print("desconectado ao banco de dados")
+    def variaveis (self):
+        self.senha= self.senha_entry.get()
+        self.nome = self.nome_entry.get()
+        self.cpf = self.cpf_entry.get()
+        self.cidade = self.cidade_entry.get()
+        self.telefone = self.telefone_entry.get()
     def montaTabelas(self):
         self.conecta_bd()
         self.cursor.execute("""
@@ -34,11 +40,7 @@ class limpa():
         self.conn.commit(); print("Banco de dados criados")
         self.desconecta_bd()
     def add_usuarios(self):
-        self.senha= self.senha_entry.get()
-        self.nome = self.nome_entry.get()
-        self.cpf = self.cpf_entry.get()
-        self.cidade = self.cidade_entry.get()
-        self.telefone = self.telefone_entry.get()
+        self.variaveis()
         self.conecta_bd()
 
         self.cursor.execute("""INSERT INTO usuarios (nome_usuarios,cpf,cidade,telefone)
@@ -47,9 +49,37 @@ class limpa():
         self.desconecta_bd()
         self.select_lista() #com isso sempre que adicionar um usuario ele ira atualizar
         self.limpa_tela()
-
+    def OnDoubleclik(self, event):
+        self.limpa_tela()
+        self.listacli.selection()
+        for n in self.listacli.selection():
+            col1,col2,col3,col4, col5= self.listacli.item(n,'values')
+            self.senha_entry.insert(END,col1)
+            self.nome_entry.insert(END,col2)
+            self.cpf_entry.insert(END,col3)
+            self.cidade_entry.insert(END,col4)
+            self.telefone_entry.insert(END,col5)
+    def deleta_senha(self):
+        self.variaveis()
+        self.conecta_bd()
+        self.cursor.execute("""DELETE FROM usuarios WHERE senha = ?""", (self.senha))
+        self.conn.commit()
+        self.desconecta_bd()
+        self.limpa_tela()
+        self.select_lista()
+    def altra_usuario(self):
+        self.variaveis()
+        self.conecta_bd()
+        self.cursor.execute("""UPDATE usuarios SET nome_usuarios = ?,cpf = ?,cidade = ?, telefone = ?
+             WHERE senha = ?""", (self.nome, self.cpf,self.cidade,self.telefone,self.senha))
+        self.conn.commit()
+        self.desconecta_bd()
+        self.select_lista()
+       
+        
 
     def select_lista(self):
+        self.variaveis()
         self.listacli.delete(*self.listacli.get_children())
         self.conecta_bd()
         lista = self.cursor.execute(""" SELECT senha, nome_usuarios, cpf,cidade, telefone FROM usuarios
@@ -97,11 +127,11 @@ class aplicativo(limpa): #precisa está a class limpa dentro da class aplicativo
         self.botão_novo = Button(self.frame_1, text="Novo",bd=3,bg='#FFFFFF', fg= '#000000',font=('verdana',8,'bold'), command= self.add_usuarios)
         self.botão_novo.place(relx=0.4, rely=0.3,relwidth=0.2,relheight=0.15)# talvez coloque na janela2
 
-        self.botão_alterar = Button(self.frame_1, text="Alterar",bd=3,bg= 'yellow', fg= '#000000',font=('verdana',8,'bold'))
+        self.botão_alterar = Button(self.frame_1, text="Alterar",bd=3,bg= 'yellow', fg= '#000000',font=('verdana',8,'bold'), command=self.altra_usuario)
         self.botão_alterar.place(relx=0.6, rely=0.3,relwidth=0.2,relheight=0.15)# talvez coloque na janela2
 
         
-        self.botão_apagar = Button(self.frame_1, text="Apagar",bd=3, bg='#ff0000', fg= '#FFFFFF',font=('verdana',8,'bold'))
+        self.botão_apagar = Button(self.frame_1, text="Apagar",bd=3, bg='#ff0000', fg= '#FFFFFF',font=('verdana',8,'bold'),command= self.deleta_senha)
         self.botão_apagar.place(relx=0.8, rely=0.3,relwidth=0.2,relheight=0.15)# talvez coloque na janela2
 
         #criação da label e entrada do codigo
@@ -146,23 +176,25 @@ class aplicativo(limpa): #precisa está a class limpa dentro da class aplicativo
         style = ttk.Style(self.janela1)
         style.theme_use('clam')
         self.listacli = ttk.Treeview(self.frame_2,height=3, column=('col1','col2','col3','col4'))
-        self.listacli.heading('#0', text="")
-        self.listacli.heading('#1', text="Senha")
+        self.listacli.heading('#0', text="senha")
+        self.listacli.heading('#1', text="nome")
         self.listacli.heading('#2', text="Cpf")
         self.listacli.heading('#3', text="Cidade")
         self.listacli.heading('#4', text="Telefone")
 
 
-        self.listacli.column('#0',width=1)
-        self.listacli.column('#1',width=50)
-        self.listacli.column('#2',width=200)
-        self.listacli.column('#3',width=125)
-        self.listacli.column('#4',width=125)
+        self.listacli.column('#0',width=40)
+        self.listacli.column('#1',width=160)
+        self.listacli.column('#2',width=75)
+        self.listacli.column('#3',width=75)
+        self.listacli.column('#4',width=150)
+        
         self.listacli.place(relx=0.01, rely=0.1,relwidth=0.95,relheight=0.85)
 
         self.scroolLista = Scrollbar(self.frame_2, orient = 'vertical') #codigo para aparecer a seta que fica do lado
         self.listacli.configure(yscroll=self.scroolLista.set)
         self.scroolLista.place(relx=0.96,rely=0.1,relwidth=0.04,relheight=0.85) 
+        self.listacli.bind("<Double-1>", self.OnDoubleclik)
 
 
 aplicativo()
@@ -173,3 +205,5 @@ aplicativo()
 
 
 #poderia colocar na classe aplicativo mais para ficar mais organizada preferir criar outras classes
+#fiz uma variavel chamada "variaveis", para não te que ficar repetindo muito codigo. já que o "variveis" tinha todos que eu precisava usar nas demais
+# sem o conn.commit ele não ira funcionar
